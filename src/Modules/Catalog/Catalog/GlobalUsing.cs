@@ -1,3 +1,9 @@
-﻿global using Microsoft.AspNetCore.Builder;
+﻿global using Catalog.Products.Events;
+global using Catalog.Products.Models;
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
+global using Shared.DDD;
+global using System.Reflection;
