@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Data.Interceptors;
 
 namespace Catalog;
 
@@ -16,7 +18,24 @@ public static class CatalogModule
 
         // add use case services
 
+        services.AddScoped<IProductRepository, ProductRepository>();
+
+        services.AddMediatR(config =>
+        {
+            config.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
+        });
+
         // add infrastructure services
+        //string? connectionString = configuration.GetConnectionString("Database");
+
+        //services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+        //services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+
+        //services.AddDbContext<CatalogDbContext>((sp, options) =>
+        //{
+        //    options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+        //    options.UseNpgsql(connectionString);
+        //});
         services.AddDbContext<CatalogDbContext>(configuration);
         services.AddScoped<IDataSeeder, CatalogDataSeeder>();
 
@@ -37,8 +56,8 @@ public static class CatalogModule
         return app;
     }
 }
-        //string? connectionString = configuration.GetConnectionString("Database");
-        //services.AddDbContext<CatalogDbContext>(options =>
-        //{
-        //    options.UseNpgsql(connectionString);
-        //});
+//string? connectionString = configuration.GetConnectionString("Database");
+//services.AddDbContext<CatalogDbContext>(options =>
+//{
+//    options.UseNpgsql(connectionString);
+//});

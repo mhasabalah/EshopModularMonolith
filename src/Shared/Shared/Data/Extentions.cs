@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,8 +10,13 @@ public static class Extensions
         where TContext : DbContext
     {
         string? connectionString = configuration.GetConnectionString("Database");
-        services.AddDbContext<TContext>(options =>
+
+        services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+        services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+
+        services.AddDbContext<TContext>((sp,options) =>
         {
+            options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
             options.UseNpgsql(connectionString);
         });
         return services;
@@ -20,7 +24,7 @@ public static class Extensions
     public static IApplicationBuilder UseMigration<TContext>(this IApplicationBuilder app)
         where TContext : DbContext
     {
-        MigrateDatabaseAsync<TContext>(app.ApplicationServices).GetAwaiter().GetResult();
+        
         SeedDataAsync(app.ApplicationServices).GetAwaiter().GetResult();
 
         return app;
