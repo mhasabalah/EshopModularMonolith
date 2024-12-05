@@ -1,1 +1,1 @@
-Add-Migration InitialCreate -OutputDir Data/Migrations -Project Catalog -StartupProject Api
+Add-Migration InitialCreate -OutputDir Data/Migrations -Project Catalog -StartupProject Api -Context CatalogContext
