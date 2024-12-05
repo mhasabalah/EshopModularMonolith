@@ -1,5 +1,5 @@
 services:
- eshopdb:
+  eshopdb:
     container_name: eshopdb
     environment:
       - POSTGRES_USER=postgres
@@ -10,3 +10,18 @@ services:
       - "5433:5432"
     volumes:
       - postgres_eshopdb:/var/lib/postgresql/data/
+  
+  redis:
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+  
+  seq:
+    container_name: seq
+    environment:
+      - ACCEPT_EULA=Y
+    restart: always
+    ports:
+      - "5341:5341"
+      - "9091:80"
