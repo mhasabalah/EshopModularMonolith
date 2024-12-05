@@ -3,17 +3,29 @@
 public static class BasketModule
 {
     public static IServiceCollection AddBasketModule(this IServiceCollection services,
-                                                      IConfiguration configuration)
+        IConfiguration configuration)
     {
-        // Register services for the Basket module here
-        // Example: services.AddTransient<IBasketService, BasketService>();
+        // add services to the container here
+        // add Endpoint services
+        services.AddScoped<IBasketRepository, BasketRepository>();
+        services.Decorate<IBasketRepository, CashedBasketRepository>();
+        // add use case services
+
+        services.AddDbContext<BasketDbContext>(configuration);
+        // services.AddScoped<IDataSeeder, BasketDataSeeder>();
+
         return services;
     }
 
     public static IApplicationBuilder UseBasketModule(this IApplicationBuilder app)
     {
-        // Configure middleware for the Basket module here
-        // Example: app.UseMiddleware<BasketMiddleware>();
+        // add Endpoint services
+
+        // add use case services
+
+        // add infrastructure services
+        app.UseMigration<BasketDbContext>();
+
         return app;
     }
 }
