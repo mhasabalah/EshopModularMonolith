@@ -1,29 +1,21 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Shared.Data.Interceptors;
 
 namespace Catalog;
 
 public static class CatalogModule
 {
     public static IServiceCollection AddCatalogModule(this IServiceCollection services,
-                                                      IConfiguration configuration)
+        IConfiguration configuration)
     {
-
         // add services to the container here
 
         // add Endpoint services
 
         // add use case services
 
-        services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<ICatalogRepository, CatalogRepository>();
 
-        services.AddMediatR(config =>
-        {
-            config.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
-        });
 
         // add infrastructure services
         //string? connectionString = configuration.GetConnectionString("Database");
@@ -44,14 +36,12 @@ public static class CatalogModule
 
     public static IApplicationBuilder UseCatalogModule(this IApplicationBuilder app)
     {
-
         // add Endpoint services
 
         // add use case services
 
         // add infrastructure services
         app.UseMigration<CatalogDbContext>();
-
 
         return app;
     }

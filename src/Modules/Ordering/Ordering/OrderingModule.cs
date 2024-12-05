@@ -1,8 +1,9 @@
 ﻿namespace Ordering;
+
 public static class OrderingModule
 {
     public static IServiceCollection AddOrderingModule(this IServiceCollection services,
-                                                      IConfiguration configuration)
+        IConfiguration configuration)
     {
         // Register services for the Ordering module here
         // Example: services.AddTransient<IOrderingService, OrderingService>();

@@ -8,12 +8,13 @@ public class Product : Aggregate<Guid>
     public string ImageFile { get; private set; } = default!;
     public decimal Price { get; private set; }
 
-    public static Product Create(Guid id, string name, List<string> category, string description, string imageFile, decimal price)
+    public static Product Create(Guid id, string name, List<string> category, string description, string imageFile,
+        decimal price)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price);
 
-        var product = new Product
+        Product product = new()
         {
             Id = id,
             Name = name,
@@ -37,9 +38,11 @@ public class Product : Aggregate<Guid>
         Category = category;
         Description = description;
         ImageFile = imageFile;
-        Price = price;
 
         if (Price != price)
+        {
+            Price = price;
             AddDomainEvent(new ProductPriceChangedEvent(this));
+        }
     }
 }

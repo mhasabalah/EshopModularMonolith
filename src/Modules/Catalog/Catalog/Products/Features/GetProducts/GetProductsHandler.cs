@@ -1,16 +1,19 @@
-﻿namespace Catalog.Products.Features.GetProducts;
+﻿using Shared.Pagination;
 
-public record GetProductsQuery() : IQuery<GetProductsResult>;
-public record GetProductsResult(IEnumerable<ProductDto> Products);
+namespace Catalog.Products.Features.GetProducts;
 
-public class GetProductsHandler(IProductRepository _productRepository) : IQueryHandler<GetProductsQuery, GetProductsResult>
+public record GetProductsQuery(PaginationRequest Request) : IQuery<GetProductsResult>;
+
+public record GetProductsResult(PaginatedResult<ProductDto> Products);
+
+public class GetProductsHandler(ICatalogRepository productRepository)
+    : IQueryHandler<GetProductsQuery, GetProductsResult>
 {
     public async Task<GetProductsResult> Handle(GetProductsQuery query, CancellationToken cancellationToken)
     {
-        IReadOnlyList<Product>? products = await _productRepository.GetAllAsync(cancellationToken);
+        PaginatedResult<Product> products = await productRepository.GetAllAsync(query.Request, cancellationToken);
 
-        IEnumerable<ProductDto> productDtos = products?.Adapt<IEnumerable<ProductDto>>() ?? Enumerable.Empty<ProductDto>();
-
+        PaginatedResult<ProductDto> productDtos = products.Adapt<PaginatedResult<ProductDto>>();
 
         return new GetProductsResult(productDtos);
     }

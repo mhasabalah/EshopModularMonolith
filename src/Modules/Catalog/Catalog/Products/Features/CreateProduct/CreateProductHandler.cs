@@ -4,12 +4,24 @@ public record CreateProductCommand(ProductDto Product)
     : ICommand<CreateProductResult>;
 
 public record CreateProductResult(Guid Id);
-public class CreateProductHandler(IProductRepository _productRepository)
+
+public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
+{
+    public CreateProductCommandValidator()
+    {
+        RuleFor(e => e.Product.Name).NotEmpty().WithMessage("Name is required");
+        RuleFor(e => e.Product.Category).NotEmpty().WithMessage("Category is required");
+        RuleFor(e => e.Product.ImageFile).NotEmpty().WithMessage("ImageFile is required");
+        RuleFor(e => e.Product.Price).GreaterThan(0).WithMessage("Price must grater than 0");
+    }
+}
+
+public class CreateProductHandler(ICatalogRepository productRepository)
     : ICommandHandler<CreateProductCommand, CreateProductResult>
 {
     public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
     {
-        var product = Product.Create(
+        Product product = Product.Create(
             Guid.NewGuid(),
             command.Product.Name,
             command.Product.Category,
@@ -18,7 +30,7 @@ public class CreateProductHandler(IProductRepository _productRepository)
             command.Product.Price
         );
 
-        await _productRepository.AddAsync(product, cancellationToken);
+        await productRepository.AddAsync(product, cancellationToken);
 
         return new CreateProductResult(product.Id);
     }
